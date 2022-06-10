@@ -36,7 +36,7 @@ class WordPress {
     /**
      * Asset Loader instance for this instance
      */
-    protected ?AssetLoader $_loader;
+    protected ?AssetLoader $_loader = null;
 
     /**
      * Build an asset loader instance with the provided configuration
@@ -120,7 +120,7 @@ class WordPress {
      */
     protected function register_loader(): void {
         try {
-            $this->loader = new AssetLoader(
+            $this->_loader = new AssetLoader(
                 $this->_production_url,
                 $this->_development_url,
                 $this->_configuration
@@ -128,7 +128,7 @@ class WordPress {
         }
         catch ( Exception $exception ) {
             error_log( wp_kses_post( $exception->getMessage() ) );
-            $this->loader = null;
+            $this->_loader = null;
         }
     }
 
@@ -157,8 +157,8 @@ class WordPress {
      */
     public function register_frontend_scripts( callable $_script_registration ) {
         add_action( 'wp_enqueue_scripts',
-            function () {
-                call_user_func_array( $_script_registration, $this );
+            function () use ( $_script_registration ) {
+                call_user_func_array( $_script_registration, [ $this ] );
             } );
     }
 
@@ -169,8 +169,8 @@ class WordPress {
      */
     public function register_block_editor_scripts( callable $_script_registration ) {
         add_action( 'enqueue_block_editor_assets',
-            function () {
-                call_user_func_array( $_script_registration, $this );
+            function () use ( $_script_registration ) {
+                call_user_func_array( $_script_registration, [ $this ] );
             } 
         );
     }
