@@ -164,7 +164,6 @@ public class WordPress {
             function () use ( $this ) {
                 call_user_func_array( $_script_registration, $this );
             } );
-
     }
 
     /**
