@@ -99,14 +99,24 @@ class AssetLoader {
 		$manifest = null;
 
 		if ( file_exists( $filename ) || str_starts_with( $filename, 'http' ) ) {
-			$data = file_get_contents( $filename, false, stream_context_create( [
+			$context_arguments = [
 				'http' => [ 'ignore_errors' => true ]
-			]) );
+			];
+
+			if ( str_starts_with( $filename, 'https' ) ) {
+				$context_arguments[ 'ssl' ] = [
+					'verify_peer'      => false,
+					'verify_peer_name' => false
+				];
+			}
+
+			$data = file_get_contents( $filename, false, stream_context_create( $context_arguments ) );
 
 			if ( !empty( $data ) ) {
 				$manifest = json_decode( $data );
 			}
 		}
+
 		return $manifest;
 	}
 

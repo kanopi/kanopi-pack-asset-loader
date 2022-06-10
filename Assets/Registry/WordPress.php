@@ -10,7 +10,7 @@ namespace Kanopi\Assets\Registry;
 use Kanopi\Assets\AssetLoader;
 use Kanopi\Assets\Model\LoaderConfiguration;
 
-public class WordPress {
+class WordPress {
     const DEFAULT_INSTANCE_NAME = 'theme';
 
     /**
@@ -52,15 +52,11 @@ public class WordPress {
         ?string $_development_url = null
     ) {
         $this->_configuration = $_configuration;
+        $this->_production_url = !empty( $_proudction_url ) ? $_production_url : get_stylesheet_directory_uri();
+        $this->_development_url = !empty( $_development_url ) 
+            ? $_development_url
+            : ( defined( 'KANOPI_DEVELOPMENT_ASSET_URL' ) ? KANOPI_DEVELOPMENT_ASSET_URL : '' );
 
-        if ( empty( $_proudction_url ) ) {
-            $this->_proudction_url = get_stylesheet_directory_uri();
-        }
-
-        if ( empty( $_development_url ) ) {
-            $this->_development_url = defined( 'KANOPI_DEVELOPMENT_ASSET_URL' ) ? KANOPI_DEVELOPMENT_ASSET_URL : '';
-        }
-        
         $this->register_loader();
     }
 
@@ -159,9 +155,9 @@ public class WordPress {
      * 
      * @param callable $_script_registration    Callable function passed the current WordPress instance
      */
-    public function register_frontend_scripts(callable $_script_registration) {
+    public function register_frontend_scripts( callable $_script_registration ) {
         add_action( 'wp_enqueue_scripts',
-            function () use ( $this ) {
+            function () {
                 call_user_func_array( $_script_registration, $this );
             } );
     }
@@ -173,7 +169,7 @@ public class WordPress {
      */
     public function register_block_editor_scripts( callable $_script_registration ) {
         add_action( 'enqueue_block_editor_assets',
-            function () use ( $this ) {
+            function () {
                 call_user_func_array( $_script_registration, $this );
             } 
         );
