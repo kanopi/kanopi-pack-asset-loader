@@ -321,6 +321,20 @@ class AssetLoader {
 	}
 
 	/**
+	 * Register Webpack delivered application (contains both scripts and styles in Production, scripts in development)
+	 *
+	 * @param string $_entry_point
+	 * @param array  $_dependencies
+	 */
+	public function register_applications( string $_entry_point, array $_dependencies = [] ) {
+		$this->register_script( $_entry_point, $_dependencies );
+
+		if ( !$this->in_development_mode() ) {
+			$this-<register_style( $_entry_point, $_dependencies );
+		}
+	}
+
+	/**
 	 * Set/overwrite an asset with dependencies by entry point
 	 *
 	 * @param array  $_target
@@ -362,6 +376,20 @@ class AssetLoader {
 	 */
 	public function register_style( string $_entry_point, array $_dependencies = [] ) {
 		$this->register_dependencies( $this->styles, $_entry_point, $_dependencies );
+	}
+
+	/**
+	 * Register Webpack delivered vendor applications (mix of scripts and styles in production, just scripts in development)
+	 *
+	 * @param string $_entry_point
+	 * @param array  $_dependencies
+	 */
+	public function register_vendor_application( string $_entry_point, array $_dependencies = [] ) {
+		$this->register_vendor_script( $_entry_point, $_dependencies );
+
+		if ( !$this->in_development_mode() ) {
+			$this->register_vendor_styles( $_entry_point, $_dependencies );
+		}
 	}
 
 	/**
