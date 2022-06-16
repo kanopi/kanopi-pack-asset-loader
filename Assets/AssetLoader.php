@@ -330,7 +330,7 @@ class AssetLoader {
 		$this->register_script( $_entry_point, $_dependencies );
 
 		if ( !$this->in_development_mode() ) {
-			$this-<register_style( $_entry_point, $_dependencies );
+			$this->register_style( $_entry_point, $_dependencies );
 		}
 	}
 

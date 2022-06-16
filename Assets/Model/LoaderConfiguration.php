@@ -85,7 +85,7 @@ class LoaderConfiguration {
 	 * @return ?string
 	 */
 	protected function check_string( ?string $_entry, ?string $_default ) : ?string {
-		return empty( trim( $_entry ) ) ? $_default : trim( $_entry );
+		return empty( trim( $_entry ?? '' ) ) ? $_default : trim( $_entry );
 	}
 
 	/**
