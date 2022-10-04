@@ -1,8 +1,8 @@
 {
   "name": "kanopi/pack-asset-loader",
-  "description": "Kanopi Pack Asset Loader seamlessly manages assets URLs betwwen Development and Production modes",
+  "description": "Kanopi Pack Asset Loader seamlessly manages assets URLs between Development and Production modes",
   "type": "library",
-  "version": "1.0",
+  "version": "1.1",
   "license": "MIT",
   "authors": [
     {
@@ -12,11 +12,11 @@
   ],
   "autoload": {
     "psr-4": {
-      "Kanopi\\Assets\\": "Assets/"
+      "Kanopi\\Assets\\": "src/"
     }
   },
   "require": {
-    "php": ">7.3"
+    "php": ">7.4"
   },
   "require-dev": {
     "automattic/vipwpcs": "^2.3",

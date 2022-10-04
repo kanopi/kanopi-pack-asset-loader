@@ -1,6 +1,6 @@
 # Kanopi Pack Asset Loader
 
-PHP library for use in WordPress applications to facilitate development using Webpack Dev Server and deployment of Webpack published assets. Loader provides a systematic method to enqueue scripts and styles produced from Webpack entry points.
+PHP library for use in WordPress applications to facilitate development using Kanopi Pack (wrapper for Webpack) and deployment of its published assets. Loader provides a systematic method to enqueue scripts and styles produced from Webpack entry points.
 
 ## Default Configuration
 
@@ -30,9 +30,7 @@ $loader = WordPress(
             new LoaderConfiguration(
 				WordPress::read_theme_version(),
 				[ 
-                    'production-domain.com',
-                    'www.production-domain.com',
-                    'other-production-domain.com'
+                    // ... list of Domain names, no protocol or path
                  ],
 				'/assets/dist/webpack-assets.json'
             )

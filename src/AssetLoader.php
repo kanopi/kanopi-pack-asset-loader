@@ -145,6 +145,7 @@ class AssetLoader {
 		$entry_path = !empty( $manifest_entry ) && property_exists( $manifest_entry, $_file_type )
 			? $manifest_entry->$_file_type
 			: null;
+		$entry_path = is_array( $entry_path ) ? $entry_path[ 0 ] : $entry_path;
 
 		// Build a manifest URL
 		$entry_url = $entry_path ?: null;

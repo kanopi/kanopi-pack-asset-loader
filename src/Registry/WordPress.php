@@ -48,11 +48,11 @@ class WordPress {
 
     public function __construct(
         LoaderConfiguration $_configuration,
-        ?string $_proudction_url = null,
+        ?string $_production_url = null,
         ?string $_development_url = null
     ) {
         $this->_configuration = $_configuration;
-        $this->_production_url = !empty( $_proudction_url ) ? $_production_url : get_stylesheet_directory_uri();
+        $this->_production_url = !empty( $$_production_url ) ? $_production_url : get_stylesheet_directory_uri();
         $this->_development_url = !empty( $_development_url ) 
             ? $_development_url
             : ( defined( 'KANOPI_DEVELOPMENT_ASSET_URL' ) ? KANOPI_DEVELOPMENT_ASSET_URL : '' );
