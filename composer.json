@@ -16,7 +16,7 @@
     }
   },
   "require": {
-    "php": ">7.4"
+    "php": ">=7.4"
   },
   "require-dev": {
     "automattic/vipwpcs": "^2.3",
