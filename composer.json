@@ -2,7 +2,7 @@
   "name": "kanopi/pack-asset-loader",
   "description": "Kanopi Pack Asset Loader seamlessly manages assets URLs between Development and Production modes",
   "type": "library",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "license": "MIT",
   "authors": [
     {
