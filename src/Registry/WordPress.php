@@ -147,7 +147,7 @@ class WordPress {
      * @return string
      */
     public function static_asset_url( string $_file_path ): string {
-        return $this->loader->static_assets_url( $_file_path );
+        return $this->asset_loader()->static_assets_url( $_file_path );
     }
 
     /**
