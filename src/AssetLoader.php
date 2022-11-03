@@ -25,7 +25,7 @@ class AssetLoader {
 	/**
 	 * @var string
 	 */
-	protected $_base_url;
+	protected string $_base_url;
 
 	/**
 	 * @var Model\LoaderConfiguration
@@ -35,7 +35,7 @@ class AssetLoader {
 	/**
 	 * @var ?string
 	 */
-	protected $_development_url_base;
+	protected ?string $_development_url_base;
 
 	/**
 	 * @var array
@@ -93,23 +93,48 @@ class AssetLoader {
 		$this->_asset_manifest       = $this->asset_manifest();
 	}
 
+	/**
+	 * Check if a subject string ends with a test string, pre PHP 8.0 compliant
+	 *
+	 * @param string $_subject
+	 * @param string $_test
+	 *
+	 * @return bool
+	 */
+	protected function ends_with( string $_subject, string $_test ): bool {
+		return $_test === substr( $_subject, -1 * strlen( $_test ) );
+	}
+
+	/**
+	 * Check if a subject string starts with a test string, pre PHP 8.0 compliant
+	 *
+	 * @param string $_subject
+	 * @param string $_test
+	 *
+	 * @return bool
+	 */
+	protected function starts_with( string $_subject, string $_test ): bool {
+		return $_test === substr( $_subject, 0, strlen( $_test ) );
+	}
+
 	protected function asset_manifest() {
 		$base     = $this->use_production ? $this->_base_url : $this->_development_url_base;
 		$filename = $base . $this->_configuration->asset_manifest_path();
 		$manifest = null;
 
-		if ( file_exists( $filename ) || str_starts_with( $filename, 'http' ) ) {
+		if ( file_exists( $filename ) || $this->starts_with( $filename, 'http' ) ) {
 			$context_arguments = [
 				'http' => [ 'ignore_errors' => true ]
 			];
 
-			if ( str_starts_with( $filename, 'https' ) ) {
+			if ( $this->starts_with( $filename, 'https' ) ) {
 				$context_arguments[ 'ssl' ] = [
 					'verify_peer'      => false,
 					'verify_peer_name' => false
 				];
 			}
 
+			// phpcs:ignore -- Intended to run fresh and inside a registry/singleton provide per request cache
 			$data = file_get_contents( $filename, false, stream_context_create( $context_arguments ) );
 
 			if ( !empty( $data ) ) {
@@ -153,10 +178,10 @@ class AssetLoader {
 		// Build a manifest URL
 		$entry_url = $entry_path ?: null;
 		if ( !empty( $entry_url ) ) {
-			$entry_slug = str_ends_with( $_path, $_file_type . '/' )
+			$entry_slug = $this->ends_with( $_path, $_file_type . '/' )
 				? str_replace( $_file_type . '/', '', $_path )
 				: $_path;
-			$entry_url  = str_starts_with( $entry_path, $_base ) ? $entry_path : $_base . $entry_slug . $entry_path;
+			$entry_url  = $this->starts_with( $entry_path, $_base ) ? $entry_path : $_base . $entry_slug . $entry_path;
 		}
 
 		// Use a manifest URL, fallback to structure URL
@@ -169,7 +194,7 @@ class AssetLoader {
 	 *
 	 * @return string
 	 */
-	protected function check_string( string $_entry, ?string $_default ) {
+	protected function check_string( string $_entry, ?string $_default ): string {
 		return empty( trim( $_entry ) ) ? $_default : trim( $_entry );
 	}
 
