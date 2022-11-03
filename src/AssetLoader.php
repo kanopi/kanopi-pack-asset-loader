@@ -118,11 +118,12 @@ class AssetLoader {
 	}
 
 	protected function asset_manifest() {
-		$base     = $this->use_production ? $this->_base_url : $this->_development_url_base;
-		$filename = $base . $this->_configuration->asset_manifest_path();
-		$manifest = null;
+		$base        = $this->use_production ? $this->_base_url : $this->_development_url_base;
+		$filename    = $base . $this->_configuration->asset_manifest_path();
+		$manifest    = null;
+		$use_context = $this->starts_with( $filename, 'http' );
 
-		if ( file_exists( $filename ) || $this->starts_with( $filename, 'http' ) ) {
+		if ( file_exists( $filename ) || $use_context ) {
 			$context_arguments = [
 				'http' => [ 'ignore_errors' => true ]
 			];
@@ -134,8 +135,10 @@ class AssetLoader {
 				];
 			}
 
+			$context = $use_context ? stream_context_create( $context_arguments ) : null;
+
 			// phpcs:ignore -- Intended to run fresh and inside a registry/singleton provide per request cache
-			$data = file_get_contents( $filename, false, stream_context_create( $context_arguments ) );
+			$data = file_get_contents( $filename, false, $context );
 
 			if ( !empty( $data ) ) {
 				$manifest = json_decode( $data );
