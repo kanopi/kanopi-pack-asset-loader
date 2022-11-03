@@ -9,6 +9,7 @@ namespace Kanopi\Assets\Registry;
 
 use Kanopi\Assets\AssetLoader;
 use Kanopi\Assets\Model\LoaderConfiguration;
+use Exception;
 
 class WordPress {
     const DEFAULT_INSTANCE_NAME = 'theme';
@@ -92,7 +93,9 @@ class WordPress {
      */
     public static function instance( string $_instance_name = self::DEFAULT_INSTANCE_NAME ): ?WordPress {
         if ( empty( self::$_instances ) || empty( self::$_instances[ $_instance_name ] ) ) {
-            error_log( "Kanopi Pack: Cannot find registy " . $_instance_name . "please ensure it is registered first using register(...)" );
+			// phpcs:ignore -- Intentionally provide an error log entry when Kanopi Pack errors
+            error_log( "Kanopi Pack: Cannot find registry " . $_instance_name
+				. "please ensure it is registered first using register(...)" );
             return null;
         }
 
@@ -127,6 +130,7 @@ class WordPress {
             );
         }
         catch ( Exception $exception ) {
+			// phpcs:ignore -- Intentionally provide an error log entry when Kanopi Pack does not load
             error_log( wp_kses_post( $exception->getMessage() ) );
             $this->_loader = null;
         }

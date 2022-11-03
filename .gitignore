@@ -1,26 +1,27 @@
-# ignore all files starting with . or ~
+# All files starting with . or ~
 .*
 ~*
 
-# ignore node and composer dependency directories
-node_modules/
+# Composer dependency directories
 vendor/
 
-# ignore OS generated files
+# OS generated files
 ehthumbs.db
 Thumbs.db
 
-# ignore Editor files
+# Editor files
 *.sublime-project
 *.sublime-workspace
 *.komodoproject
+*.vscode
+*.idea
 
-# ignore log files and databases
+# Log files and databases
 *.log
 *.sql
 *.sqlite
 
-# ignore compiled files
+# Compiled files
 *.com
 *.class
 *.dll
@@ -28,7 +29,7 @@ Thumbs.db
 *.o
 *.so
 
-# ignore packaged files
+# Packaged files
 *.7z
 *.dmg
 *.gz
@@ -38,40 +39,5 @@ Thumbs.db
 *.tar
 *.zip
 
-# -------------------------
-# BEGIN Included Files
-# -------------------------
-
-# include our project documentation.
-!docs/
-
-# track these files, if they exist
-!.gitignore
-!.gitkeep
-!.editorconfig
-!.phpcs.xml.dist
-!README.md
-!CHANGELOG.md
-!CONTRIBUTING.md
-!LICENSE.md
-!PULL_REQUEST_TEMPLATE.md
-!composer.json
-!composer.lock
-
-# track our local dev and CI setup, if files exist
-!.docksal/
-!.circleci/
-
-# track favicon files, if they exist
-!android-chrome-*.png
-!apple-touch-icon*.png
-!browserconfig.xml
-!favicon*.png
-!favicon*.ico
-!manifest.json
-!mstile-*.png
-!safari-pinned-tab.svg
-!site.webmanifest
-
-# Import/Export files
-*.csv
+# Test results files
+results*.txt

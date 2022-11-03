@@ -1,21 +1,19 @@
 <?xml version="1.0"?>
-<ruleset name="WP-Media-Pages">
-	<description>CS rules based on Automattic for VIP Go</description>
-	<config name="testVersion" value="7.4-"/>
+<ruleset
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    name="PSR-4-PHP-7-4"
+    xsi:noNamespaceSchemaLocation="phpcs.xsd"
+>
+    <description>PSR-4 PHP 7.4 Rules</description>
+    <config name="testVersion" value="7.4-"/>
 
-	<!-- What to scan -->
-	<file>.</file>
-	<exclude-pattern>/vendor/</exclude-pattern>
-	<exclude-pattern>/node_modules/</exclude-pattern>
-
-	<!-- How to scan -->
-	<!-- Usage instructions: https://github.com/squizlabs/PHP_CodeSniffer/wiki/Usage -->
-	<!-- Annotated ruleset: https://github.com/squizlabs/PHP_CodeSniffer/wiki/Annotated-ruleset.xml -->
-	<arg value="sp"/> <!-- Show sniff and progress -->
-	<arg name="basepath" value="./"/><!-- Strip the file paths down to the relevant bit -->
-	<arg name="colors"/>
+	<arg name="basepath" value="./"/>
 	<arg name="extensions" value="php"/>
-	<arg name="parallel" value="8"/><!-- Enables parallel processing when available for faster results. -->
+	<arg name="parallel" value="8"/>
 
+	<file>.</file>
+	<include-pattern>*/src/**/*</include-pattern>
+	<exclude-pattern>*/vendor/*</exclude-pattern>
+	
 	<rule ref="WordPress-VIP-Go"/>
 </ruleset>
