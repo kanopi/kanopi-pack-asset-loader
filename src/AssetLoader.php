@@ -170,7 +170,7 @@ class AssetLoader {
 		$entry_path = !empty( $manifest_entry ) && property_exists( $manifest_entry, $_file_type )
 			? $manifest_entry->$_file_type
 			: null;
-		
+
 		if ( is_array( $entry_path ) ) {
 			$entry_path = $this->use_production ? $entry_path[ count( $entry_path ) - 1 ] : $entry_path[ 0 ];
 		}
@@ -189,12 +189,12 @@ class AssetLoader {
 	}
 
 	/**
-	 * @param string      $_entry
-	 * @param string|null $_default
+	 * @param string  $_entry
+	 * @param ?string $_default
 	 *
-	 * @return string
+	 * @return ?string
 	 */
-	protected function check_string( string $_entry, ?string $_default ): string {
+	protected function check_string( string $_entry, ?string $_default ): ?string {
 		return empty( trim( $_entry ) ) ? $_default : trim( $_entry );
 	}
 
@@ -408,7 +408,8 @@ class AssetLoader {
 	}
 
 	/**
-	 * Register Webpack delivered vendor applications (mix of scripts and styles in production, just scripts in development)
+	 * Register Webpack delivered vendor applications (mix of scripts and styles in production, just scripts in
+	 * development)
 	 *
 	 * @param string $_entry_point
 	 * @param array  $_dependencies
