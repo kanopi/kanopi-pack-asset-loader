@@ -53,7 +53,7 @@ class WordPress {
         ?string $_development_url = null
     ) {
         $this->_configuration = $_configuration;
-        $this->_production_url = !empty( $$_production_url ) ? $_production_url : get_stylesheet_directory_uri();
+        $this->_production_url = !empty( $$_production_url ) ? $_production_url : get_stylesheet_directory(); // this is where we want to change things. 
         $this->_development_url = !empty( $_development_url ) 
             ? $_development_url
             : ( defined( 'KANOPI_DEVELOPMENT_ASSET_URL' ) ? KANOPI_DEVELOPMENT_ASSET_URL : '' );
@@ -124,7 +124,7 @@ class WordPress {
     protected function register_loader(): void {
         try {
             $this->_loader = new AssetLoader(
-                $this->_production_url,
+                $this->_production_url, // prod URL or path
                 $this->_development_url,
                 $this->_configuration
             );
