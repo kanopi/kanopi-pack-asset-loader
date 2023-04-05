@@ -123,6 +123,10 @@ class AssetLoader {
 		$manifest    = null;
 		$use_context = $this->starts_with( $filename, 'http' );
 
+		if ( ! $use_context ) {
+			$filename = realpath($_SERVER['DOCUMENT_ROOT']) . $filename;
+		}
+	
 		if ( file_exists( $filename ) || $use_context ) {
 			$context_arguments = [
 				'http' => [ 'ignore_errors' => true ]
@@ -292,6 +296,7 @@ class AssetLoader {
 			: $_dependencies;
 
 		if ( $this->use_production ) {
+			$register_url = $this->build_entry_url( $_base, $this->_configuration->style_path(), $_entry, 'css' );
 			wp_register_style(
 				$handle,
 				$this->build_entry_url( $_base, $this->_configuration->style_path(), $_entry, 'css' ),
