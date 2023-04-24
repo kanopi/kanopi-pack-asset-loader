@@ -296,7 +296,6 @@ class AssetLoader {
 			: $_dependencies;
 
 		if ( $this->use_production ) {
-			$register_url = $this->build_entry_url( $_base, $this->_configuration->style_path(), $_entry, 'css' );
 			wp_register_style(
 				$handle,
 				$this->build_entry_url( $_base, $this->_configuration->style_path(), $_entry, 'css' ),
