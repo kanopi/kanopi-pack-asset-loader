@@ -123,10 +123,6 @@ class AssetLoader {
 		$manifest    = null;
 		$use_context = $this->starts_with( $filename, 'http' );
 
-		if ( ! $use_context ) {
-			$filename = realpath($_SERVER['DOCUMENT_ROOT']) . $filename;
-		}
-	
 		if ( file_exists( $filename ) || $use_context ) {
 			$context_arguments = [
 				'http' => [ 'ignore_errors' => true ]
