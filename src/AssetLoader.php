@@ -118,7 +118,7 @@ class AssetLoader {
 	}
 
 	protected function asset_manifest() {
-		$base        = $this->use_production ? $this->_base_url : $this->_development_url_base;
+		$base        = $this->use_production ? $this->_configuration->production_file_path() : $this->_development_url_base;
 		$filename    = $base . $this->_configuration->asset_manifest_path();
 		$manifest    = null;
 		$use_context = $this->starts_with( $filename, 'http' );

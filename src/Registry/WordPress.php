@@ -41,7 +41,7 @@ class WordPress {
 
     /**
      * Build an asset loader instance with the provided configuration
-     * 
+     *
      * @param LoaderConfiguration   $_configuration     Configuration for the AssetLoader instance
      * @param ?string               $_production_url    (Optional) Production URL base path, defaults to theme directory
      * @param ?string               $_development_url   (Optional) Development URL base path, defaults to KANOPI_DEVELOPMENT_ASSET_URL or empty
@@ -53,10 +53,24 @@ class WordPress {
         ?string $_development_url = null
     ) {
         $this->_configuration = $_configuration;
-        $this->_production_url = !empty( $_production_url ) ? $_production_url : str_replace( ABSPATH, '/', get_stylesheet_directory() );
-        $this->_development_url = !empty( $_development_url ) 
+        $this->_production_url = !empty( $_production_url ) ? $_production_url : get_stylesheet_directory_uri();
+        $this->_development_url = !empty( $_development_url )
             ? $_development_url
             : ( defined( 'KANOPI_DEVELOPMENT_ASSET_URL' ) ? KANOPI_DEVELOPMENT_ASSET_URL : '' );
+
+		// Bugfix to workaround limitations with current loader to ensure the manifest is loaded via file path in production
+		if ( empty( $this->_configuration->production_file_path() ) ) {
+			$this->_configuration = new LoaderConfiguration(
+				$this->_configuration->version(),
+				$this->_configuration->production_domains(),
+				$this->_configuration->asset_manifest_path(),
+				$this->_configuration->handle_prefix(),
+				$this->_configuration->script_path(),
+				$this->_configuration->style_path(),
+				$this->_configuration->static_path(),
+				get_stylesheet_directory()
+			);
+		}
 
         $this->register_loader();
     }
@@ -65,7 +79,7 @@ class WordPress {
      * Register an asset loader instance with the following configuration and instance name
      *  - Multiple registrations are possible, for multiple Kanopi Pack instances, specify different $_instance_names
      *  - Once registered, you cannot overwrite a named instance, it will return the current registration
-     * 
+     *
      * @param LoaderConfiguration   $_configuration     Configuration for the AssetLoader instance
      * @param string                $_instance_name     (Optional) Registered instance handle/name
      * @param ?string               $_production_url    (Optional) Production URL base path, defaults to theme directory
@@ -86,10 +100,10 @@ class WordPress {
 
     /**
      * Find an instance by registered handle/name
-     * 
+     *
      * @param string $_instance_name    (Optional) Registered instance handle/name
-     * 
-     * @return ?WordPress 
+     *
+     * @return ?WordPress
      */
     public static function instance( string $_instance_name = self::DEFAULT_INSTANCE_NAME ): ?WordPress {
         if ( empty( self::$_instances ) || empty( self::$_instances[ $_instance_name ] ) ) {
@@ -145,7 +159,7 @@ class WordPress {
 
     /**
      * Current environment URL path to static assets
-     * 
+     *
      * @param string $_file_path
      *
      * @return string
@@ -156,7 +170,7 @@ class WordPress {
 
     /**
      * Register front-end scripts
-     * 
+     *
      * @param callable $_script_registration    Callable function passed the current WordPress instance
      */
     public function register_frontend_scripts( callable $_script_registration ) {
@@ -168,14 +182,14 @@ class WordPress {
 
     /**
      * Register block editor scripts
-     * 
+     *
      * @param callable $_script_registration    Callable function passed the current WordPress instance
      */
     public function register_block_editor_scripts( callable $_script_registration ) {
         add_action( 'enqueue_block_editor_assets',
             function () use ( $_script_registration ) {
                 call_user_func_array( $_script_registration, [ $this ] );
-            } 
+            }
         );
     }
 }
