@@ -124,6 +124,7 @@ class AssetLoader {
 		$use_context = $this->starts_with( $filename, 'http' );
 
 		if ( file_exists( $filename ) || $use_context ) {
+			// Set timeout to 15 seconds for HTTP requests
 			$context_arguments = [
 				'http' => [
 					'ignore_errors' => true,
