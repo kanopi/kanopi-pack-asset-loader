@@ -125,7 +125,10 @@ class AssetLoader {
 
 		if ( file_exists( $filename ) || $use_context ) {
 			$context_arguments = [
-				'http' => [ 'ignore_errors' => true ]
+				'http' => [
+					'ignore_errors' => true,
+					'timeout'       => 15,
+				]
 			];
 
 			if ( $this->starts_with( $filename, 'https' ) ) {
