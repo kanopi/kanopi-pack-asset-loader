@@ -1,4 +1,4 @@
-<?php 
+<?php
 /**
  * Webpack Asset Loader Configuration
  */
@@ -30,6 +30,13 @@ class LoaderConfiguration {
     protected array $_production_domains;
 
     /**
+	 * Root file path to the files in production, to find the asset manifest
+	 *
+	 * @var string
+	 */
+	protected string $_production_file_path;
+
+    /**
 	 * @var string
 	 */
 	protected string $_script_path;
@@ -59,6 +66,7 @@ class LoaderConfiguration {
 	 * @param ?string $_script_path
 	 * @param ?string $_style_path
 	 * @param ?string $_static_path
+	 * @param ?string $_production_file_path
 	 */
 	public function __construct(
         ?string $_version = null,
@@ -67,15 +75,17 @@ class LoaderConfiguration {
 		?string $_handle_prefix = null,
 		?string $_script_path = null,
 		?string $_style_path = null,
-		?string $_static_path = null
+		?string $_static_path = null,
+		?string $_production_file_path = null
 	) {
-        $this->_version             = $this->check_string( $_version, null );
-		$this->_asset_manifest_path = $this->check_string( $_asset_manifest_path, '' );
-		$this->_handle_prefix       = $this->check_string( $_handle_prefix, self::DEFAULT_PREFIX );
-		$this->_script_path         = $this->check_string( $_script_path, self::DEFAULT_SCRIPT_PATH );
-		$this->_static_path         = $this->check_string( $_static_path, self::DEFAULT_STATIC_PATH );
-		$this->_style_path          = $this->check_string( $_style_path, self::DEFAULT_STYLE_PATH );
-        $this->_production_domains  = is_array( $_production_domains ) ? $_production_domains : [];
+        $this->_version              = $this->check_string( $_version, null );
+		$this->_asset_manifest_path  = $this->check_string( $_asset_manifest_path, '' );
+		$this->_handle_prefix        = $this->check_string( $_handle_prefix, self::DEFAULT_PREFIX );
+		$this->_script_path          = $this->check_string( $_script_path, self::DEFAULT_SCRIPT_PATH );
+		$this->_static_path          = $this->check_string( $_static_path, self::DEFAULT_STATIC_PATH );
+		$this->_style_path           = $this->check_string( $_style_path, self::DEFAULT_STYLE_PATH );
+        $this->_production_domains   = is_array( $_production_domains ) ? $_production_domains : [];
+		$this->_production_file_path = $this->check_string( $_production_file_path, '' );
 	}
 
     /**
@@ -114,6 +124,13 @@ class LoaderConfiguration {
     /**
      * Url path fragment before scripts
      */
+	public function production_file_path() : string {
+        return $this->_production_file_path;
+    }
+
+    /**
+     * Url path fragment before scripts
+     */
 	public function script_path() : string {
         return $this->_script_path;
     }
@@ -131,7 +148,7 @@ class LoaderConfiguration {
 	public function style_path() : string {
         return $this->_style_path;
     }
-	
+
     /**
      * Asset version passed to enqueue calls
      */

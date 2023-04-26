@@ -118,14 +118,18 @@ class AssetLoader {
 	}
 
 	protected function asset_manifest() {
-		$base        = $this->use_production ? $this->_base_url : $this->_development_url_base;
+		$base        = $this->use_production ? $this->_configuration->production_file_path() : $this->_development_url_base;
 		$filename    = $base . $this->_configuration->asset_manifest_path();
 		$manifest    = null;
 		$use_context = $this->starts_with( $filename, 'http' );
 
 		if ( file_exists( $filename ) || $use_context ) {
+			// Set timeout to 15 seconds for HTTP requests
 			$context_arguments = [
-				'http' => [ 'ignore_errors' => true ]
+				'http' => [
+					'ignore_errors' => true,
+					'timeout'       => 15,
+				]
 			];
 
 			if ( $this->starts_with( $filename, 'https' ) ) {
