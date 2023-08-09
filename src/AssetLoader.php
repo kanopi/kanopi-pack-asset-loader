@@ -315,7 +315,7 @@ class AssetLoader {
 				$this->build_entry_url( $_base, $this->_configuration->script_path(), $_entry, 'js' ),
 				[],
 				$this->_configuration->version(),
-				true
+				$this->_configuration->development_styles_in_head()
 			);
 		}
 
