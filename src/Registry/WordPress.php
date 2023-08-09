@@ -34,6 +34,20 @@ class WordPress {
      */
     protected string $_production_url;
 
+	/**
+	 * Priority used by the enqueue_block_editor_assets back-end hook, default of 10
+	 *
+	 * @var int
+	 */
+	protected int $priority_block_editor = 10;
+
+	/**
+	 * Priority used by the wp_enqueue_scripts front-end hook, default of 10
+	 *
+	 * @var int
+	 */
+	protected int $priority_frontend = 10;
+
     /**
      * Asset Loader instance for this instance
      */
@@ -174,10 +188,13 @@ class WordPress {
      * @param callable $_script_registration    Callable function passed the current WordPress instance
      */
     public function register_frontend_scripts( callable $_script_registration ) {
-        add_action( 'wp_enqueue_scripts',
+        add_action(
+			'wp_enqueue_scripts',
             function () use ( $_script_registration ) {
                 call_user_func_array( $_script_registration, [ $this ] );
-            } );
+            },
+			$this->priority_frontend
+		);
     }
 
     /**
@@ -186,10 +203,38 @@ class WordPress {
      * @param callable $_script_registration    Callable function passed the current WordPress instance
      */
     public function register_block_editor_scripts( callable $_script_registration ) {
-        add_action( 'enqueue_block_editor_assets',
+        add_action(
+			'enqueue_block_editor_assets',
             function () use ( $_script_registration ) {
                 call_user_func_array( $_script_registration, [ $this ] );
-            }
+            },
+			$this->priority_block_editor
         );
     }
+
+	/**
+	 * Sets the priority (positive, non-zero integer, sets 10 if invalid) for block editor script registration
+	 *
+	 * @param int $_priority Positive, non-zero integer priority
+	 *
+	 * @return WordPress Updated instance
+	 */
+	public function update_block_editor_priority( int $_priority ): WordPress {
+		$this->priority_block_editor = 0 < $_priority ? $_priority : 10;
+
+		return $this;
+	}
+
+	/**
+	 * Sets the priority (positive, non-zero integer, sets 10 if invalid) for front-end script registration
+	 *
+	 * @param int $_priority Positive, non-zero integer priority
+	 *
+	 * @return WordPress Updated instance
+	 */
+	public function update_frontend_priority( int $_priority ): WordPress {
+		$this->priority_frontend = 0 < $_priority ? $_priority : 10;
+
+		return $this;
+	}
 }
