@@ -295,6 +295,11 @@ class AssetLoader {
 			? array_merge( $_dependencies, [ $_last_chain ] )
 			: $_dependencies;
 
+		/**
+		 * Styles are registered as Scripts in Dev Mode
+		 * 	- Dependencies are invalid there, as style dependencies are invalid for scripts
+		 *  - This should be ok, as scripts are loaded in the footer
+		 */
 		if ( $this->use_production ) {
 			wp_register_style(
 				$handle,
@@ -304,12 +309,13 @@ class AssetLoader {
 			wp_enqueue_style( $handle );
 		}
 		else {
+			// Dependencies deliberately disabled in Dev Mode as scripts cannot depend on styles
 			wp_enqueue_script(
 				$handle,
 				$this->build_entry_url( $_base, $this->_configuration->script_path(), $_entry, 'js' ),
-				$dependencies,
+				[],
 				$this->_configuration->version(),
-				true
+				$this->_configuration->development_styles_in_head()
 			);
 		}
 
