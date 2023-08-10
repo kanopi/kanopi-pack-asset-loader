@@ -16,19 +16,20 @@ PHP library for use in PHP and WordPress applications to facilitate development 
 
 All assets are registered with the following sets of configuration parameters:
 
-| Parameter | Default |
-| --- | --- |
-| `Asset Manifest Path` | None |
-| `Handle Prefixes`| kanopi-pack- |
-| `Production Domains` | None |
-| `Script Path`| /assets/dist/js/ |
-| `Static Path`| /assets/dist/static/ |
-| `Style Path`| /assets/dist/css/ |
-| `Version` | None |
+| Parameter                    | Default              |
+|------------------------------|----------------------|
+| `Asset Manifest Path`        | None                 |
+| `Development Styles In Head` | False                |
+| `Handle Prefixes`            | kanopi-pack-         |
+| `Production Domains`         | None                 |
+| `Script Path`                | /assets/dist/js/     |
+| `Static Path`                | /assets/dist/static/ |
+| `Style Path`                 | /assets/dist/css/    |
+| `Version`                    | None                 |
 
 
-| Class Method | Description |
-| --- | --- |
+| Class Method                                                                                                                                                                                                                                 | Description                                                   |
+|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|---------------------------------------------------------------|
 | `__construct( ?string $_version = null, ?array $_production_domains = null, ?string $_asset_manifest_path = null, ?string $_handle_prefix = null, ?string $_script_path = null, ?string $_style_path = null, ?string $_static_path = null )` | Override any default values associated with the configuration |
 
 
@@ -41,16 +42,16 @@ Webpack generates two special script types which are loaded at specific times, t
 1. **Runtime** - Present to coordinate modules shared between multiple packages. For instance, if `app1.js` and `app2.js` share Vue3, a runtime file (default handle of `runtime`) is generated and must be loaded before either.
 2. **Vendor** - Contains any third-party imported modules, either listed under the `package.json` key of `require`, or referenced in an entry point with `@import <named_node_module>`. For instance, if `app1.js` and `app2.js` share Vue3, a vendor file (default handle of `vendor`) is generated and must be loaded before any Runtime and App entry points. **NOTE** - Webpack may also generate another module coordinating file, default handle of `central`, which is always present on the Dev Server. 
 
-| Class Method | Description |
-| --- | --- |
-| `__construct( string $_base_url, ?string $_development_url, Model\LoaderConfiguration $_configuration )` | Coordinate the asset loader, based on a set of production and development URLs, and path configurations |
-| `enqueue_assets()` | Helper function generates a series of WordPress `wp_enqueue_*` calls |
-| `in_development_mode(): bool` | Flag to tell whether the assets are currently loaded in Production or Development mode |
-| `register_applications( string $_handle, array $_dependencies = [] )` | Register an application (contains both script and styles), via entry point handle and any preceding script handles (not styles) |
-| `register_runtime_script( string $_handle, array $_dependencies = [] )` | Register the Webpack runtime script, via entry point handle and any preceding scripts |
-| `register_script( string $_handle, array $_dependencies = [] )` | Register a script, via entry point handle and any preceding scripts |
-| `register_style( string $_handle, array $_dependencies = [] )` | Register a style, via entry point handle and any preceding styles |
-| `register_vendor_script( string $_handle, array $_dependencies = [] )` | Register a Webpack generated vendor script, via entry point handle and any preceding scripts |
+| Class Method                                                                                             | Description                                                                                                                     |
+|----------------------------------------------------------------------------------------------------------|---------------------------------------------------------------------------------------------------------------------------------|
+| `__construct( string $_base_url, ?string $_development_url, Model\LoaderConfiguration $_configuration )` | Coordinate the asset loader, based on a set of production and development URLs, and path configurations                         |
+| `enqueue_assets()`                                                                                       | Helper function generates a series of WordPress `wp_enqueue_*` calls                                                            |
+| `in_development_mode(): bool`                                                                            | Flag to tell whether the assets are currently loaded in Production or Development mode                                          |
+| `register_applications( string $_handle, array $_dependencies = [] )`                                    | Register an application (contains both script and styles), via entry point handle and any preceding script handles (not styles) |
+| `register_runtime_script( string $_handle, array $_dependencies = [] )`                                  | Register the Webpack runtime script, via entry point handle and any preceding scripts                                           |
+| `register_script( string $_handle, array $_dependencies = [] )`                                          | Register a script, via entry point handle and any preceding scripts                                                             |
+| `register_style( string $_handle, array $_dependencies = [] )`                                           | Register a style, via entry point handle and any preceding styles; In development mode, these are ignored.                      |
+| `register_vendor_script( string $_handle, array $_dependencies = [] )`                                   | Register a Webpack generated vendor script, via entry point handle and any preceding scripts                                    |
 
 
 ### WordPress Enqueue Registry
@@ -61,11 +62,13 @@ Coordinates enqueuing assets within WordPress with the Front-end and Block Edito
 
 The main WordPress registration class is located at `Kanopi\Assets\Registry\WordPress`. 
 
-| Class Method | Description |
-| --- | --- |
-| `__construct( LoaderConfiguration $_configuration )` | Configures the asset manifest and versioning features |
-| `register_block_editor_scripts( callback $_closure )` | Wrapper to enqueue scripts and styles for the Block Editor |
-| `register_frontend_scripts( callback $_closure )` | Wrapper to enqueue scripts and styles on the site front-end |
+| Class Method                                          | Description                                                                                  |
+|-------------------------------------------------------|----------------------------------------------------------------------------------------------|
+| `__construct( LoaderConfiguration $_configuration )`  | Configures the asset manifest and versioning features                                        |
+| `register_block_editor_scripts( callback $_closure )` | Wrapper to enqueue scripts and styles for the Block Editor                                   |
+| `register_frontend_scripts( callback $_closure )`     | Wrapper to enqueue scripts and styles on the site front-end                                  |
+| `update_block_editor_priority`                        | Configure the WordPress action priority of the loaded scripts and styles in the Block Editor |
+| `update_frontend_priority`                            | Configure the WordPress action priority of the loaded scripts and styles on the front-end    |
 
 
 ## WordPress Configuration Note
@@ -148,7 +151,7 @@ module.exports = {
         "cssOutputPath": "css/[name].css",
         "entryPoints": {
             "song": "./assets/src/scss/song/index.scss",
-            "song-app": "./assets/src/js/song/index.js"
+            "song-app": "./assets/src/js/song/index.js",
             "theme": "./assets/src/scss/theme/index.scss",
             "theme-app": "./assets/src/js/theme/index.js"
         },
@@ -216,11 +219,11 @@ module.exports = {
         "cssOutputPath": "css/[name].css",
         "entryPoints": {
             "block-editor": "./assets/src/js/block-editor/index.ts",
-            "block-theme": "./assets/src/scss/block-editor/index.scss"
+            "block-theme": "./assets/src/scss/block-editor/index.scss",
             "song-listing": "./assets/src/scss/song-listing/index.scss",
-            "song-listing-app": "./assets/src/js/song-listing/index.js"
+            "song-listing-app": "./assets/src/js/song-listing/index.js",
             "testimonial": "./assets/src/scss/testimonial/index.scss",
-            "testimonial-app": "./assets/src/js/testimonial/index.js"
+            "testimonial-app": "./assets/src/js/testimonial/index.js",
             "theme": "./assets/src/scss/theme/index.scss",
             "theme-app": "./assets/src/js/theme/index.js"
         },
