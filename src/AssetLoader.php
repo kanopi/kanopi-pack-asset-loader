@@ -365,8 +365,8 @@ class AssetLoader {
 	/**
 	 * Register Webpack delivered application (contains both scripts and styles in Production, scripts in development)
 	 *
-	 * @param string $_entry_point
-	 * @param array  $_dependencies
+	 * @param string $_entry_point  Name of the entry point in the Webpack Configuration
+	 * @param array  $_dependencies Dependencies required before enqueuing this stylesheet
 	 */
 	public function register_applications( string $_entry_point, array $_dependencies = [] ) {
 		$this->register_script( $_entry_point, $_dependencies );
@@ -379,9 +379,9 @@ class AssetLoader {
 	/**
 	 * Set/overwrite an asset with dependencies by entry point
 	 *
-	 * @param array  $_target
-	 * @param string $_entry
-	 * @param array  $_dependencies
+	 * @param array  $_target       Set of assets to add the registration
+	 * @param string $_entry        Name of the entry point in the Webpack Configuration
+	 * @param array  $_dependencies Dependencies required before enqueuing this stylesheet
 	 */
 	protected function register_dependencies( array &$_target, string $_entry, array $_dependencies ) {
 		$entry = strtolower( trim( $_entry ) );
@@ -393,8 +393,8 @@ class AssetLoader {
 	/**
 	 * Register any webpack-dev-server runtime dependencies
 	 *
-	 * @param string $_entry_point
-	 * @param array  $_dependencies
+	 * @param string $_entry_point  Name of the entry point in the Webpack Configuration
+	 * @param array  $_dependencies Dependencies required before enqueuing this stylesheet
 	 */
 	public function register_runtime_script( string $_entry_point, array $_dependencies = [] ) {
 		$this->register_dependencies( $this->runtime_scripts, $_entry_point, $_dependencies );
@@ -403,8 +403,8 @@ class AssetLoader {
 	/**
 	 * Register Webpack delivered application scripts
 	 *
-	 * @param string $_entry_point
-	 * @param array  $_dependencies
+	 * @param string $_entry_point  Name of the entry point in the Webpack Configuration
+	 * @param array  $_dependencies Dependencies required before enqueuing this stylesheet
 	 */
 	public function register_script( string $_entry_point, array $_dependencies = [] ) {
 		$this->register_dependencies( $this->scripts, $_entry_point, $_dependencies );
@@ -413,8 +413,8 @@ class AssetLoader {
 	/**
 	 * Register Webpack delivered application stylesheets
 	 *
-	 * @param string  $_entry_point  Name of the entry point in the Webpack Configuration
-	 * @param array   $_dependencies Dependencies required before enqueuing this stylesheet
+	 * @param string $_entry_point  Name of the entry point in the Webpack Configuration
+	 * @param array  $_dependencies Dependencies required before enqueuing this stylesheet
 	 */
 	public function register_style( string $_entry_point, array $_dependencies = [] ) {
 		$this->register_dependencies( $this->styles, $_entry_point, $_dependencies );
@@ -424,8 +424,8 @@ class AssetLoader {
 	 * Register Webpack delivered vendor applications (mix of scripts and styles in production, just scripts in
 	 * development)
 	 *
-	 * @param string $_entry_point
-	 * @param array  $_dependencies
+	 * @param string $_entry_point  Name of the entry point in the Webpack Configuration
+	 * @param array  $_dependencies Dependencies required before enqueuing this stylesheet
 	 */
 	public function register_vendor_application( string $_entry_point, array $_dependencies = [] ) {
 		$this->register_vendor_script( $_entry_point, $_dependencies );
@@ -438,8 +438,8 @@ class AssetLoader {
 	/**
 	 * Register Webpack delivered vendor scripts
 	 *
-	 * @param string $_entry_point
-	 * @param array  $_dependencies
+	 * @param string $_entry_point  Name of the entry point in the Webpack Configuration
+	 * @param array  $_dependencies Dependencies required before enqueuing this stylesheet
 	 */
 	public function register_vendor_script( string $_entry_point, array $_dependencies = [] ) {
 		$this->register_dependencies( $this->vendor_scripts, $_entry_point, $_dependencies );
@@ -448,8 +448,8 @@ class AssetLoader {
 	/**
 	 * Register Webpack delivered vendor stylesheets
 	 *
-	 * @param string $_entry_point
-	 * @param array  $_dependencies
+	 * @param string $_entry_point  Name of the entry point in the Webpack Configuration
+	 * @param array  $_dependencies Dependencies required before enqueuing this stylesheet
 	 */
 	public function register_vendor_styles( string $_entry_point, array $_dependencies = [] ) {
 		$this->register_dependencies( $this->vendor_styles, $_entry_point, $_dependencies );
@@ -458,9 +458,15 @@ class AssetLoader {
 	/**
 	 * Use to Register a stylesheet handle for an entrypoint, does not add the script to queue for enqueue_assets()
 	 *
-	 * @param string  $_entry_point  Name of the entry point in the Webpack Configuration
+	 * @param string $_entry_point      Name of the entry point in the Webpack Configuration
+	 * @param array  $_dependencies     Dependencies required before enqueuing this stylesheet
+	 * @param array  $_dev_dependencies Dependencies required before enqueuing this stylesheet in Dev
 	 */
-	public function style_handle_registration( string $_entry_point ): void {
+	public function style_handle_registration( 
+		string $_entry_point,
+		array $_dependencies = [],
+		array $_dev_dependencies = []
+	): void {
 		$entry  = strtolower( trim( $_entry_point ) );
 		$handle = $this->prefixed_entry_name( $entry );
 		
@@ -468,7 +474,7 @@ class AssetLoader {
 			wp_register_style(
 				$handle,
 				$this->build_entry_url( $this->_base_url, $this->_configuration->style_path(), $entry, 'css' ),
-				[],
+				$_dependencies,
 				$this->_configuration->version() );
 		}
 		else {
@@ -476,7 +482,7 @@ class AssetLoader {
 			wp_register_script(
 				$handle,
 				$this->build_entry_url( $this->_development_url_base, $this->_configuration->script_path(), $entry, 'js' ),
-				[],
+				$_dev_dependencies,
 				$this->_configuration->version(),
 				$this->_configuration->development_styles_in_head()
 			);
