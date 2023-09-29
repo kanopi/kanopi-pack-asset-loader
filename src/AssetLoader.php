@@ -413,8 +413,8 @@ class AssetLoader {
 	/**
 	 * Register Webpack delivered application stylesheets
 	 *
-	 * @param string $_entry_point
-	 * @param array  $_dependencies
+	 * @param string  $_entry_point  Name of the entry point in the Webpack Configuration
+	 * @param array   $_dependencies Dependencies required before enqueuing this stylesheet
 	 */
 	public function register_style( string $_entry_point, array $_dependencies = [] ) {
 		$this->register_dependencies( $this->styles, $_entry_point, $_dependencies );
@@ -453,6 +453,34 @@ class AssetLoader {
 	 */
 	public function register_vendor_styles( string $_entry_point, array $_dependencies = [] ) {
 		$this->register_dependencies( $this->vendor_styles, $_entry_point, $_dependencies );
+	}
+
+	/**
+	 * Use to Register a stylesheet handle for an entrypoint, does not add the script to queue for enqueue_assets()
+	 *
+	 * @param string  $_entry_point  Name of the entry point in the Webpack Configuration
+	 */
+	public function style_handle_registration( string $_entry_point ): void {
+		$entry  = strtolower( trim( $_entry_point ) );
+		$handle = $this->prefixed_entry_name( $entry );
+		
+		if ( $this->use_production ) {
+			wp_register_style(
+				$handle,
+				$this->build_entry_url( $this->_base_url, $this->_configuration->style_path(), $entry, 'css' ),
+				[],
+				$this->_configuration->version() );
+		}
+		else {
+			// Dependencies deliberately disabled in Dev Mode as scripts cannot depend on styles
+			wp_register_script(
+				$handle,
+				$this->build_entry_url( $this->_development_url_base, $this->_configuration->script_path(), $entry, 'js' ),
+				[],
+				$this->_configuration->version(),
+				$this->_configuration->development_styles_in_head()
+			);
+		}
 	}
 
 	/**
