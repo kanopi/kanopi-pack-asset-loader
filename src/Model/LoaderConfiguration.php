@@ -63,15 +63,15 @@ class LoaderConfiguration {
 	/**
 	 * LoaderConfiguration constructor.
 	 *
-	 * @param ?string $_version
-	 * @param ?array  $_production_domains
-	 * @param ?string $_asset_manifest_path
-	 * @param ?string $_handle_prefix
-	 * @param ?string $_script_path
-	 * @param ?string $_style_path
-	 * @param ?string $_static_path
-	 * @param ?string $_production_file_path
-	 * @param ?bool   $_development_styles_in_head
+	 * @param ?string $_version                     Version to assign stylesheet URL
+	 * @param ?array  $_production_domains          Guaranteed Production domains
+	 * @param ?string $_asset_manifest_path         Relative path to the Asset Manifest file
+	 * @param ?string $_handle_prefix               Prefix before the entry point handle
+	 * @param ?string $_script_path                 Relative path to scripts
+	 * @param ?string $_style_path                  Relative path to styles
+	 * @param ?string $_static_path                 Relative path to static files
+	 * @param ?string $_production_file_path        Production file path (for Asset Manifest and WP Blocks)
+	 * @param ?bool   $_development_styles_in_head  Whether to include development styles in the head tag
 	 */
 	public function __construct(
 		?string $_version = null,

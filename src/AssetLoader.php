@@ -153,6 +153,44 @@ class AssetLoader {
 	}
 
 	/**
+	 * Reads a file path from the manifest, otherwise falls back to the asset name
+	 *
+	 * @param string $_base      Base file path
+	 * @param string $_path      Relative file path
+	 * @param string $_entry     Entry point name
+	 * @param string $_file_type File type to generate
+	 *
+	 * @return string
+	 */
+	protected function build_entry_path(
+		string $_base,
+		string $_path,
+		string $_entry,
+		string $_file_type
+	): string {
+		// Ensures the manifest exists
+		$manifest_entry = !empty( $this->_asset_manifest ) && property_exists( $this->_asset_manifest, $_entry )
+			? $this->_asset_manifest->$_entry
+			: null;
+
+		// Finds any manifest entry path
+		$entry_path = !empty( $manifest_entry ) && property_exists( $manifest_entry, $_file_type )
+			? $manifest_entry->$_file_type
+			: null;
+
+		// Build a manifest path
+		if ( ! empty( $entry_path ) ) {
+			$entry_slug = $this->ends_with( $_path, $_file_type . '/' )
+				? str_replace( $_file_type . '/', '', $_path )
+				: $_path;
+			$entry_path = $this->starts_with( $entry_path, $_base ) ? $entry_path : $_base . $entry_slug . $entry_path;
+		}
+
+		// Use a manifest URL, fallback to structure URL
+		return $entry_path ?? $_base . $_path . $_entry . '.' . $_file_type;
+	}
+
+	/**
 	 * Reads from the manifest, otherwise falls back to the asset name
 	 *
 	 * @param string $_base
@@ -458,14 +496,12 @@ class AssetLoader {
 	/**
 	 * Use to Register a stylesheet handle for an entrypoint, does not add the script to queue for enqueue_assets()
 	 *
-	 * @param string $_entry_point      Name of the entry point in the Webpack Configuration
-	 * @param array  $_dependencies     Dependencies required before enqueuing this stylesheet
-	 * @param array  $_dev_dependencies Dependencies required before enqueuing this stylesheet in Dev
+	 * @param string $_entry_point  Name of the entry point in the Webpack Configuration
+	 * @param array  $_dependencies Dependencies required before enqueuing this stylesheet
 	 */
-	public function style_handle_registration( 
+	public function style_handle_registration(
 		string $_entry_point,
-		array $_dependencies = [],
-		array $_dev_dependencies = []
+		array $_dependencies = []
 	): void {
 		$entry  = strtolower( trim( $_entry_point ) );
 		$handle = $this->prefixed_entry_name( $entry );
@@ -473,16 +509,22 @@ class AssetLoader {
 		if ( $this->use_production ) {
 			wp_register_style(
 				$handle,
-				$this->build_entry_url( $this->_base_url, $this->_configuration->style_path(), $entry, 'css' ),
+				$this->build_entry_path(
+					$this->_configuration->production_file_path(),
+					$this->_configuration->style_path(),
+					$entry,
+					'css'
+				),
 				$_dependencies,
-				$this->_configuration->version() );
+				$this->_configuration->version()
+			);
 		}
 		else {
 			// Dependencies deliberately disabled in Dev Mode as scripts cannot depend on styles
 			wp_register_script(
 				$handle,
 				$this->build_entry_url( $this->_development_url_base, $this->_configuration->script_path(), $entry, 'js' ),
-				$_dev_dependencies,
+				[],
 				$this->_configuration->version(),
 				$this->_configuration->development_styles_in_head()
 			);

@@ -57,8 +57,8 @@ class WordPress {
      * Build an asset loader instance with the provided configuration
      *
      * @param LoaderConfiguration   $_configuration     Configuration for the AssetLoader instance
-     * @param ?string               $_production_url    (Optional) Production URL base path, defaults to theme directory
-     * @param ?string               $_development_url   (Optional) Development URL base path, defaults to KANOPI_DEVELOPMENT_ASSET_URL or empty
+     * @param ?string               $_production_url    (Optional) URL path, default of theme directory
+     * @param ?string               $_development_url   (Optional) URL path, default of KANOPI_DEVELOPMENT_ASSET_URL
      */
 
     public function __construct(
@@ -66,11 +66,10 @@ class WordPress {
         ?string $_production_url = null,
         ?string $_development_url = null
     ) {
-        $this->_configuration = $_configuration;
-        $this->_production_url = !empty( $_production_url ) ? $_production_url : get_stylesheet_directory_uri();
-        $this->_development_url = !empty( $_development_url )
-            ? $_development_url
-            : ( defined( 'KANOPI_DEVELOPMENT_ASSET_URL' ) ? KANOPI_DEVELOPMENT_ASSET_URL : '' );
+        $defaultDevelopmentUrl  = defined( 'KANOPI_DEVELOPMENT_ASSET_URL' ) ? KANOPI_DEVELOPMENT_ASSET_URL : '';
+        $this->_configuration   = $_configuration;
+        $this->_production_url  = !empty( $_production_url ) ? $_production_url : get_stylesheet_directory_uri();
+        $this->_development_url = !empty( $_development_url ) ? $_development_url : $defaultDevelopmentUrl;
 
 		// Bugfix to workaround limitations with current loader to ensure the manifest is loaded via file path in production
 		if ( empty( $this->_configuration->production_file_path() ) ) {
@@ -97,7 +96,7 @@ class WordPress {
      * @param LoaderConfiguration   $_configuration     Configuration for the AssetLoader instance
      * @param string                $_instance_name     (Optional) Registered instance handle/name
      * @param ?string               $_production_url    (Optional) Production URL base path, defaults to theme directory
-     * @param ?string               $_development_url   (Optional) Development URL base path, defaults to KANOPI_DEVELOPMENT_ASSET_URL or empty
+     * @param ?string               $_development_url   (Optional) URL path, default of KANOPI_DEVELOPMENT_ASSET_URL
      */
     public static function register(
         LoaderConfiguration $_configuration,
@@ -106,7 +105,8 @@ class WordPress {
         ?string $_development_url = null
     ) : WordPress {
         if ( empty( self::$_instances ) || empty( self::$_instances[ $_instance_name ] ) ) {
-            self::$_instances[ $_instance_name ] = new WordPress( $_configuration, $_production_url, $_development_url );
+            self::$_instances[ $_instance_name ] = 
+                new WordPress( $_configuration, $_production_url, $_development_url );
         }
 
         return self::$_instances[ $_instance_name ];
