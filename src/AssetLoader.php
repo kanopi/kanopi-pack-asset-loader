@@ -509,14 +509,25 @@ class AssetLoader {
 		if ( $this->use_production ) {
 			wp_register_style(
 				$handle,
-				$this->build_entry_path(
-					$this->_configuration->production_file_path(),
+				$this->build_entry_url(
+					$this->_base_url,
 					$this->_configuration->style_path(),
 					$entry,
 					'css'
 				),
 				$_dependencies,
 				$this->_configuration->version()
+			);
+
+			wp_style_add_data(
+				$handle,
+				'path',
+				$this->build_entry_path(
+					$this->_configuration->production_file_path(),
+					$this->_configuration->style_path(),
+					$entry,
+					'css'
+				)
 			);
 		}
 		else {
