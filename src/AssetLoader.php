@@ -574,7 +574,7 @@ class AssetLoader {
 		}
 		else {
 			// Dependencies deliberately disabled in Dev Mode as scripts cannot depend on styles
-			wp_register_script(
+			wp_enqueue_script(
 				$handle,
 				$this->build_entry_url( $this->_development_url_base, $this->_configuration->script_path(), $entry, 'js' ),
 				[],
