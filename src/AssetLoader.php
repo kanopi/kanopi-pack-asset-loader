@@ -524,12 +524,7 @@ class AssetLoader {
 			);
 		}
 		else {
-			wp_enqueue_script(
-				$handle,
-				$this->build_entry_url( $this->_development_url_base, $this->_configuration->script_path(), $entry, 'js' ),
-				[],
-				$this->_configuration->version()
-			);
+			$this->register_script( $entry );
 		}
 	}
 	
@@ -574,13 +569,7 @@ class AssetLoader {
 		}
 		else {
 			// Dependencies deliberately disabled in Dev Mode as scripts cannot depend on styles
-			wp_enqueue_script(
-				$handle,
-				$this->build_entry_url( $this->_development_url_base, $this->_configuration->script_path(), $entry, 'js' ),
-				[],
-				$this->_configuration->version(),
-				$this->_configuration->development_styles_in_head()
-			);
+			$this->register_script( $entry );
 		}
 	}
 	
