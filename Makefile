@@ -24,7 +24,12 @@ php80:
 php81:
 	$(MAKE) phptest VERSION=8.1
 
+.PHONY: php82
+
+php82:
+	$(MAKE) phptest VERSION=8.2
+
 .PHONY: test
 
 test:
-	$(MAKE) -j 3 php74 php80 php81
+	$(MAKE) -j 4 php74 php80 php81 php82
