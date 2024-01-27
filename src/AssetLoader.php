@@ -524,14 +524,14 @@ class AssetLoader {
 			);
 		}
 		else {
-			$this->register_script( $entry );
+			$this->register_script( $entry, $_dependencies );
 		}
 	}
 	
 	/**
 	 * Use to Register a stylesheet handle for an entrypoint, does not add the style to queue for enqueue_assets()
 	 * - Enables dynamic inclusions and inlining in Production mode for block styles
-	 * - Dev mode always registers and enqueues
+	 * - Dev mode always registers and enqueues, though as scripts, so it will ignore Dependencies due to type mismatch
 	 *
 	 * @param string $_entry_point  Name of the entry point in the Webpack Configuration
 	 * @param array  $_dependencies Dependencies required before enqueuing this stylesheet
